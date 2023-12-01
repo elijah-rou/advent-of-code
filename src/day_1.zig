@@ -49,10 +49,8 @@ fn part_2(digits: *[2]u8, idx: usize, line: []const u8, char: u8) void {
     }
 }
 
-const PART = 2;
-
 pub fn main() !void {
-    // Setup Arena Alloc
+    const part = std.os.argv[1][0];
     var arena = std.heap.ArenaAllocator.init(std.heap.c_allocator);
     defer _ = arena.deinit();
     const allocator = arena.child_allocator;
@@ -63,8 +61,8 @@ pub fn main() !void {
     while (lines.next()) |line| {
         var digits = [2]u8{ undefined, undefined };
         for (line, 0..) |char, idx| {
-            switch (PART) {
-                1 => {
+            switch (part) {
+                49 => { // arg = 1
                     part_1(&digits, char);
                 },
                 else => {
