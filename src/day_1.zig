@@ -1,27 +1,22 @@
 const std = @import("std");
 const util = @import("util.zig");
 
-const char_map = std.ComptimeStringMap(u8, .{ .{ "one", "1" }, .{ "two", "2" }, .{ "three", "3" }, .{ "four", "4" }, .{ "five", "5" }, .{ "six", "6" }, .{ "seven", "7" }, .{ "eight", "8" }, .{ "nine", "9" } });
-
-fn shiftLeft(comptime T: [type]u8, arr: T) T {
-    var i: usize = 0;
-    while (i < arr.len - 1) : (i += 1) {
-        arr[i] = arr[i + 1];
-    }
-    return arr;
+const char_map = std.ComptimeStringMap(u8, .{ .{ "zero", 48 }, .{ "one", 49 }, .{ "two", 50 }, .{ "three", 51 }, .{ "four", 52 }, .{ "five", 53 }, .{ "six", 54 }, .{ "seven", 55 }, .{ "eight", 56 }, .{ "nine", 57 } });
+test "Get an element from char map" {
+    try std.testing.expect(char_map.get("one").? == 49);
 }
 
-fn advance_buffer(comptime T: [type]u8, buffer: T, char: u8) !T {
-    const buffer_len = buffer.len;
-    for (std.meta.enumerate(buffer)) |e| {
-        if (e.value == undefined) {
-            buffer[e.index] = char;
-            break;
-        } else if (e.index == buffer_len - 1) {
-            buffer = shiftLeft(T, buffer);
-            buffer[e.index] = char;
+fn take_greedy(char: u8, greedy_nums: [3]?u8) u8 {
+    if (char >= 48 and char < 58) {
+        return char;
+    } else {
+        for (greedy_nums) |char_num| {
+            if (char_num != null) {
+                return char_num.?;
+            }
         }
     }
+    return 0;
 }
 
 pub fn main() !void {
@@ -33,24 +28,23 @@ pub fn main() !void {
     var lines = try util.read_delim(&allocator, "resources/day_1/input", "\n");
     var digit_sum: i32 = 0;
 
-    var greedy_buffer_3 = [3]u8{ 0, 0, 0 };
-    var greedy_buffer_4 = [4]u8{ 0, 0, 0, 0 };
-    var greedy_buffer_5 = [5]u8{ 0, 0, 0, 0, 0 };
-
     while (lines.next()) |line| {
         var digits = [2]u8{ undefined, undefined };
-        for (line) |char| {
-            greedy_buffer[buffer_idx] = char;
-            const greedy_val = char_map.get(greedy_buffer);
-            if (greedy_val != null) {
-                std.log.info("Buffer: {s}", .{greedy_buffer});
-            }
-            buffer_idx += 1;
+        for (line, 0..) |char, idx| {
+            const end_3 = @min(idx + 3, line.len);
+            const end_4 = @min(idx + 4, line.len);
+            const end_5 = @min(idx + 5, line.len);
+            const greedy_3 = char_map.get(line[idx..end_3]);
+            const greedy_4 = char_map.get(line[idx..end_4]);
+            const greedy_5 = char_map.get(line[idx..end_5]);
 
-            if (digits[0] == undefined and char >= 48 and char < 58) {
-                digits[0] = char;
-            } else if (digits[0] != undefined and char >= 48 and char < 58) {
-                digits[1] = char;
+            const greedy_num = take_greedy(char, [3]?u8{ greedy_3, greedy_4, greedy_5 });
+            if (greedy_num != 0) {
+                if (digits[0] == undefined) {
+                    digits[0] = greedy_num;
+                } else if (digits[0] != undefined) {
+                    digits[1] = greedy_num;
+                }
             }
         }
         if (digits[1] == undefined) {
