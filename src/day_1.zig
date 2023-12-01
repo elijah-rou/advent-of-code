@@ -19,6 +19,36 @@ fn take_greedy(char: u8, greedy_nums: [3]?u8) u8 {
     return 0;
 }
 
+fn part_1(digits: *[2]u8, char: u8) void {
+    if (char >= 48 and char < 58) {
+        if (digits[0] == undefined) {
+            digits[0] = char;
+        } else if (digits[0] != undefined) {
+            digits[1] = char;
+        }
+    }
+}
+
+fn part_2(digits: *[2]u8, idx: usize, line: []const u8, char: u8) void {
+    const end_3 = @min(idx + 3, line.len);
+    const end_4 = @min(idx + 4, line.len);
+    const end_5 = @min(idx + 5, line.len);
+    const greedy_3 = char_map.get(line[idx..end_3]);
+    const greedy_4 = char_map.get(line[idx..end_4]);
+    const greedy_5 = char_map.get(line[idx..end_5]);
+
+    const greedy_num = take_greedy(char, [3]?u8{ greedy_3, greedy_4, greedy_5 });
+    if (greedy_num != 0) {
+        if (digits[0] == undefined) {
+            digits[0] = greedy_num;
+        } else if (digits[0] != undefined) {
+            digits[1] = greedy_num;
+        }
+    }
+}
+
+const PART = 2;
+
 pub fn main() !void {
     // Setup Arena Alloc
     var arena = std.heap.ArenaAllocator.init(std.heap.c_allocator);
@@ -31,22 +61,16 @@ pub fn main() !void {
     while (lines.next()) |line| {
         var digits = [2]u8{ undefined, undefined };
         for (line, 0..) |char, idx| {
-            const end_3 = @min(idx + 3, line.len);
-            const end_4 = @min(idx + 4, line.len);
-            const end_5 = @min(idx + 5, line.len);
-            const greedy_3 = char_map.get(line[idx..end_3]);
-            const greedy_4 = char_map.get(line[idx..end_4]);
-            const greedy_5 = char_map.get(line[idx..end_5]);
-
-            const greedy_num = take_greedy(char, [3]?u8{ greedy_3, greedy_4, greedy_5 });
-            if (greedy_num != 0) {
-                if (digits[0] == undefined) {
-                    digits[0] = greedy_num;
-                } else if (digits[0] != undefined) {
-                    digits[1] = greedy_num;
-                }
+            switch (PART) {
+                1 => {
+                    part_1(&digits, char);
+                },
+                else => {
+                    part_2(&digits, idx, line, char);
+                },
             }
         }
+
         if (digits[1] == undefined) {
             digits[1] = digits[0];
         }
