@@ -10,7 +10,8 @@ fn part_1(digits: *[2]u8, char: u8) void {
     if (char >= 48 and char < 58) {
         if (digits[0] == undefined) {
             digits[0] = char;
-        } else if (digits[0] != undefined) {
+            digits[1] = char;
+        } else {
             digits[1] = char;
         }
     }
@@ -41,7 +42,8 @@ fn part_2(digits: *[2]u8, idx: usize, line: []const u8, char: u8) void {
     if (greedy_num != 0) {
         if (digits[0] == undefined) {
             digits[0] = greedy_num;
-        } else if (digits[0] != undefined) {
+            digits[1] = greedy_num;
+        } else {
             digits[1] = greedy_num;
         }
     }
@@ -69,10 +71,6 @@ pub fn main() !void {
                     part_2(&digits, idx, line, char);
                 },
             }
-        }
-
-        if (digits[1] == undefined) {
-            digits[1] = digits[0];
         }
         if (digits[0] != undefined and digits[1] != undefined) {
             const number = try std.fmt.parseInt(i32, &digits, 10);
