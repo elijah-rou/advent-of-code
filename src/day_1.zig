@@ -6,6 +6,16 @@ test "Get an element from char map" {
     try std.testing.expect(char_map.get("one").? == 49);
 }
 
+fn part_1(digits: *[2]u8, char: u8) void {
+    if (char >= 48 and char < 58) {
+        if (digits[0] == undefined) {
+            digits[0] = char;
+        } else if (digits[0] != undefined) {
+            digits[1] = char;
+        }
+    }
+}
+
 fn take_greedy(char: u8, greedy_nums: [3]?u8) u8 {
     if (char >= 48 and char < 58) {
         return char;
@@ -17,16 +27,6 @@ fn take_greedy(char: u8, greedy_nums: [3]?u8) u8 {
         }
     }
     return 0;
-}
-
-fn part_1(digits: *[2]u8, char: u8) void {
-    if (char >= 48 and char < 58) {
-        if (digits[0] == undefined) {
-            digits[0] = char;
-        } else if (digits[0] != undefined) {
-            digits[1] = char;
-        }
-    }
 }
 
 fn part_2(digits: *[2]u8, idx: usize, line: []const u8, char: u8) void {
