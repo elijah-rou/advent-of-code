@@ -45,7 +45,8 @@ pub fn main() !void {
     defer _ = file_arena.deinit();
 
     var lines = try util.read_delim(&fa, "resources/day_2/input", "\n");
-    var game_sum: i32 = 0;
+    var game_id_sum: i32 = 0;
+    var game_power_sum: i32 = 0;
     while (lines.next()) |game| {
         var details = std.mem.splitScalar(u8, game, ':');
         const id = details.next().?;
@@ -54,6 +55,10 @@ pub fn main() !void {
         const draws = details.next().?;
         var hands = std.mem.splitScalar(u8, draws, ';');
         var invalid: bool = false;
+        var red_max: i32 = 0;
+        var green_max: i32 = 0;
+        var blue_max: i32 = 0;
+
         while (hands.next()) |set| {
             var arena = std.heap.ArenaAllocator.init(std.heap.c_allocator);
             defer _ = arena.deinit();
@@ -88,14 +93,17 @@ pub fn main() !void {
             if (red_amount > RED or green_amount > GREEN or blue_amount > BLUE) {
                 invalid = true;
             }
-            if (invalid) {
-                break;
-            }
+            red_max = @max(red_amount, red_max);
+            green_max = @max(green_amount, green_max);
+            blue_max = @max(blue_amount, blue_max);
         }
         if (!invalid) {
-            std.log.debug("Take: {s}", .{game_id});
-            game_sum += try std.fmt.parseInt(i32, game_id, 10);
+            // std.log.debug("Take: {s}", .{game_id});
+            game_id_sum += try std.fmt.parseInt(i32, game_id, 10);
         }
+        // std.log.debug("{d}, {d}, {d}", .{ red_max, green_max, blue_max });
+        game_power_sum += (red_max * green_max * blue_max);
     }
-    std.log.info("Id Sum: {d}", .{game_sum});
+    std.log.info("Id Sum: {d}", .{game_id_sum});
+    std.log.info("Power Sum: {d}", .{game_power_sum});
 }
