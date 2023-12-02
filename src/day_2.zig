@@ -6,7 +6,7 @@ fn is_digit(char: u8) bool {
     return char >= '0' and char <= '9';
 }
 
-const Result = struct {
+const GameResult = struct {
     const Self = @This();
     const RED_MAX = 12;
     const GREEN_MAX = 13;
@@ -16,7 +16,7 @@ const Result = struct {
     green: i32 = 0,
     blue: i32 = 0,
 
-    fn remax(self: *Self, new_colours: Result) void {
+    fn remax(self: *Self, new_colours: GameResult) void {
         self.red = @max(new_colours.red, self.red);
         self.green = @max(new_colours.green, self.green);
         self.blue = @max(new_colours.blue, self.blue);
@@ -39,8 +39,6 @@ const Result = struct {
 };
 
 pub fn main() !void {
-    const part = std.os.argv[1][0];
-    _ = part;
     var main_arena = std.heap.ArenaAllocator.init(std.heap.c_allocator);
     const ma = main_arena.allocator();
     defer _ = main_arena.deinit();
@@ -54,11 +52,11 @@ pub fn main() !void {
         const gameplay = details.next().?;
 
         var bag_draws = std.mem.splitScalar(u8, gameplay, ';');
-        var game_result = Result{};
+        var game_result = GameResult{};
         var invalid_game = false;
         while (bag_draws.next()) |set| {
             var sets = std.mem.splitScalar(u8, set, ',');
-            var draw_result = Result{};
+            var draw_result = GameResult{};
             while (sets.next()) |cubes| {
                 var arena = std.heap.ArenaAllocator.init(std.heap.c_allocator);
                 defer _ = arena.deinit();
@@ -78,17 +76,15 @@ pub fn main() !void {
                         break;
                     }
                 }
-                if (draw_result.is_invalid()) {
-                    invalid_game = true;
-                }
+            }
+            if (draw_result.is_invalid()) {
+                invalid_game = true;
             }
             game_result.remax(draw_result);
         }
         if (!invalid_game) {
-            // std.log.debug("Take: {s}", .{game_id});
             game_id_sum += try std.fmt.parseInt(i32, game_id, 10);
         }
-        // std.log.debug("{d}, {d}, {d}", .{ red_max, green_max, blue_max });
         game_power_sum += game_result.power();
     }
     std.log.info("Id Sum: {d}", .{game_id_sum});
