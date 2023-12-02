@@ -34,11 +34,11 @@ fn get_cubes(results: std.StringHashMap(?[]u8), key: []const u8) i32 {
 pub fn main() !void {
     const part = std.os.argv[1][0];
     _ = part;
-    var file_arena = std.heap.ArenaAllocator.init(std.heap.c_allocator);
-    const fa = file_arena.allocator();
-    defer _ = file_arena.deinit();
+    var main_arena = std.heap.ArenaAllocator.init(std.heap.c_allocator);
+    const ma = main_arena.allocator();
+    defer _ = main_arena.deinit();
 
-    var lines = try util.read_delim(&fa, "resources/day_2/input", "\n");
+    var lines = try util.read_delim(&ma, "resources/day_2/input", "\n");
     var game_id_sum: i32 = 0;
     var game_power_sum: i32 = 0;
     while (lines.next()) |game| {
