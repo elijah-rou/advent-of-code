@@ -31,12 +31,6 @@ fn get_cubes(results: std.StringHashMap(?[]u8), key: []const u8) i32 {
     }
 }
 
-fn update_cubes(results: std.StringHashMap(ArrayList(u8)), key: []const u8, amount: [2]u8) !void {
-    _ = amount;
-    _ = key;
-    _ = results;
-}
-
 pub fn main() !void {
     const part = std.os.argv[1][0];
     _ = part;
