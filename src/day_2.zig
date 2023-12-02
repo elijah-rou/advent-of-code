@@ -54,7 +54,7 @@ pub fn main() !void {
         const gameplay = details.next().?;
 
         var bag_draws = std.mem.splitScalar(u8, gameplay, ';');
-        var result = Result{};
+        var game_result = Result{};
         var invalid_game = false;
         while (bag_draws.next()) |set| {
             var sets = std.mem.splitScalar(u8, set, ',');
@@ -82,14 +82,14 @@ pub fn main() !void {
                     invalid_game = true;
                 }
             }
-            result.remax(draw_result);
+            game_result.remax(draw_result);
         }
         if (!invalid_game) {
             // std.log.debug("Take: {s}", .{game_id});
             game_id_sum += try std.fmt.parseInt(i32, game_id, 10);
         }
         // std.log.debug("{d}, {d}, {d}", .{ red_max, green_max, blue_max });
-        game_power_sum += result.power();
+        game_power_sum += game_result.power();
     }
     std.log.info("Id Sum: {d}", .{game_id_sum});
     std.log.info("Power Sum: {d}", .{game_power_sum});
