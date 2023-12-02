@@ -16,15 +16,8 @@ fn is_digit(char: u8) bool {
 fn get_cubes(results: std.StringHashMap(?[]u8), key: []const u8) i32 {
     const amount = results.get(key).?;
     if (amount != null) {
-        return std.fmt.parseInt(i32, amount.?, 10) catch |err| switch (err) {
-            error.Overflow => {
-                std.log.err("Overflow error\n", .{});
-                return 0;
-            },
-            error.InvalidCharacter => {
-                std.log.err("Invalid character error\n", .{});
-                return 0;
-            },
+        return std.fmt.parseInt(i32, amount.?, 10) catch {
+            return 0;
         };
     } else {
         return 0;
