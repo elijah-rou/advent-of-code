@@ -53,7 +53,7 @@ pub fn main() !void {
     const part = std.os.argv[1][0];
     var arena = std.heap.ArenaAllocator.init(std.heap.c_allocator);
     defer _ = arena.deinit();
-    const allocator = arena.child_allocator;
+    const allocator = arena.allocator();
 
     var lines = try util.read_delim(&allocator, "resources/day_1/input", "\n");
     var digit_sum: i32 = 0;
