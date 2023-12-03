@@ -101,9 +101,8 @@ pub fn main() !void {
     const engine = try grid.toOwnedSlice();
     const y_dim = engine.len;
     const x_dim = engine[0].len;
-    std.log.info("{any}", .{engine});
-    std.log.info(" Grid y: {d}", .{y_dim});
-    std.log.info("Grid x: {d}", .{x_dim});
+    std.log.info("Grid y size: {d}", .{y_dim});
+    std.log.info("Grid x size: {d}", .{x_dim});
 
     var part_accumulator: u32 = 0;
     var gear_accumulator: u32 = 0;
