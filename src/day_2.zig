@@ -2,10 +2,6 @@ const std = @import("std");
 const util = @import("util.zig");
 const ArrayList = std.ArrayList;
 
-fn is_digit(char: u8) bool {
-    return char >= '0' and char <= '9';
-}
-
 const GameResult = struct {
     const Self = @This();
     const RED_MAX = 12;
@@ -63,7 +59,7 @@ pub fn main() !void {
                 const allocator = arena.allocator();
                 var amount = ArrayList(u8).init(allocator);
                 for (cubes) |char| {
-                    if (is_digit(char)) {
+                    if (util.is_digit(char)) {
                         try amount.append(char);
                     } else if (char == 'r') {
                         draw_result.red = try std.fmt.parseInt(i32, amount.items, 10);
