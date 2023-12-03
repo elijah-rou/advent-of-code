@@ -16,6 +16,6 @@ pub fn read_delim(allocator: *const std.mem.Allocator, filename: []const u8, del
     return std.mem.splitSequence(u8, buffer, delimiter);
 }
 
-fn is_digit(char: u8) bool {
+pub fn is_digit(char: u8) bool {
     return char >= '0' and char <= '9';
 }
