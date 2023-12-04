@@ -12,7 +12,7 @@ fn add_card(card: u32, card_collection: *HashMap, card_amount: u32) !void {
     }
 }
 
-fn scratchcard_bonanza(card: u32, winning_scores: Set, card_collection: *HashMap, score_list: []const u8) !u32 {
+fn scratchcard_bonanza(card: u32, winning_scores: Set, card_collection: *HashMap, score_list: []const u8) !struct { score: u32, cards: u32 } {
     var draw_scores = std.mem.tokenizeScalar(u8, score_list, ' ');
     try add_card(card, card_collection, 1);
 
@@ -30,7 +30,7 @@ fn scratchcard_bonanza(card: u32, winning_scores: Set, card_collection: *HashMap
         }
     }
 
-    return total_score;
+    return .{ .score = total_score, .cards = 1 + (matches - 1) * current_card_count };
 }
 
 pub fn main() !void {
@@ -43,6 +43,7 @@ pub fn main() !void {
 
     var card_collection = HashMap.init(ma);
     var card_idx: u32 = 1;
+    var total_cards: u32 = 0;
     while (lines.next()) |line| {
         if (line.len > 0) {
             var loop_arena = std.heap.ArenaAllocator.init(std.heap.c_allocator);
@@ -55,15 +56,11 @@ pub fn main() !void {
             while (draw_scores.next()) |score| {
                 try winning_scores.put(score, undefined);
             }
-            total_score += try scratchcard_bonanza(card_idx, winning_scores, &card_collection, score_lists.next().?);
+            const am_i_lucky = try scratchcard_bonanza(card_idx, winning_scores, &card_collection, score_lists.next().?);
+            total_score += am_i_lucky.score;
+            total_cards += am_i_lucky.cards;
         }
         card_idx += 1;
-    }
-
-    var total_cards: u32 = 0;
-    var card_iterator = card_collection.iterator();
-    while (card_iterator.next()) |card_number| {
-        total_cards += card_number.value_ptr.*;
     }
 
     std.log.info("Score: {d}", .{total_score});
