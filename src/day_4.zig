@@ -1,6 +1,6 @@
 const std = @import("std");
 const util = @import("util.zig");
-const HashMap = std.AutoArrayHashMap(u32, u32);
+const HashMap = std.AutoHashMap(u32, u32);
 const Set = std.StringHashMap(void);
 const Allocator = std.mem.Allocator;
 
