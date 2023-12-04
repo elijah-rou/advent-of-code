@@ -27,27 +27,25 @@ fn am_i_lucky(winning_scores: Set, score_list: []const u8) !u32 {
     return total_score;
 }
 
-fn add_card(card: u32, card_collection: *HashMap) !void {
+fn add_card(card: u32, card_collection: *HashMap, card_amount: u32) !void {
     if (card_collection.get(card)) |value| {
-        try card_collection.put(card, value + 1);
+        try card_collection.put(card, value + card_amount);
     } else {
-        try card_collection.put(card, 1);
+        try card_collection.put(card, card_amount);
     }
 }
 
 fn scratchcard_bonanza(card: u32, winning_scores: Set, card_collection: *HashMap, score_list: []const u8) !void {
     var draw_scores = std.mem.tokenizeScalar(u8, score_list, ' ');
-    try add_card(card, card_collection);
+    try add_card(card, card_collection, 1);
 
-    for (0..card_collection.get(card).?) |_| {
-        var matches: u32 = 1;
-        while (draw_scores.next()) |score| {
-            if (winning_scores.contains(score)) {
-                try add_card(card + matches, card_collection);
-                matches += 1;
-            }
+    const current_card_count = card_collection.get(card).?;
+    var matches: u32 = 1;
+    while (draw_scores.next()) |score| {
+        if (winning_scores.contains(score)) {
+            try add_card(card + matches, card_collection, current_card_count);
+            matches += 1;
         }
-        draw_scores.reset();
     }
 }
 
@@ -76,7 +74,6 @@ pub fn main() !void {
     var total_cards: u32 = 0;
     var card_iterator = card_collection.valueIterator();
     while (card_iterator.next()) |card_number| {
-        std.log.debug("val {d}", .{card_number.*});
         total_cards += card_number.*;
     }
 
