@@ -1,6 +1,6 @@
 const std = @import("std");
 const util = @import("util.zig");
-const HashMap = std.AutoHashMap(u32, u32);
+const HashMap = std.AutoArrayHashMap(u32, u32);
 const Set = std.StringHashMap(void);
 const Allocator = std.mem.Allocator;
 
@@ -72,9 +72,9 @@ pub fn main() !void {
     }
 
     var total_cards: u32 = 0;
-    var card_iterator = card_collection.valueIterator();
+    var card_iterator = card_collection.iterator();
     while (card_iterator.next()) |card_number| {
-        total_cards += card_number.*;
+        total_cards += card_number.value_ptr.*;
     }
 
     std.log.info("Score: {d}", .{total_score});
