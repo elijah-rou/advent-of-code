@@ -27,18 +27,27 @@ fn am_i_lucky(winning_scores: Set, score_list: []const u8) !u32 {
     return total_score;
 }
 
+fn add_card(card: u32, card_collection: *HashMap) !void {
+    if (card_collection.get(card)) |value| {
+        try card_collection.put(card, value + 1);
+    } else {
+        try card_collection.put(card, 1);
+    }
+}
+
 fn scratchcard_bonanza(card: u32, winning_scores: Set, card_collection: *HashMap, score_list: []const u8) !void {
     var draw_scores = std.mem.tokenizeScalar(u8, score_list, ' ');
-    var count: u32 = 1;
-    while (draw_scores.next()) |score| {
-        if (winning_scores.contains(score)) {
-            const received_card = card + count;
-            if (card_collection.get(received_card)) |value| {
-                try card_collection.put(received_card, value + 1);
-            } else {
-                try card_collection.put(received_card, 1);
+    try add_card(card, card_collection);
+
+    for (0..card_collection.get(card).?) |_| {
+        var matches: u32 = 1;
+        while (draw_scores.next()) |score| {
+            if (winning_scores.contains(score)) {
+                try add_card(card + matches, card_collection);
+                matches += 1;
             }
         }
+        draw_scores.reset();
     }
 }
 
@@ -47,7 +56,7 @@ pub fn main() !void {
     const ma = main_arena.allocator();
     defer _ = main_arena.deinit();
 
-    var lines = try util.read_delim(&ma, "resources/day_4/test", "\n");
+    var lines = try util.read_delim(&ma, "resources/day_4/input", "\n");
     var total_score: u32 = 0;
 
     var card_collection = HashMap.init(ma);
@@ -67,6 +76,7 @@ pub fn main() !void {
     var total_cards: u32 = 0;
     var card_iterator = card_collection.valueIterator();
     while (card_iterator.next()) |card_number| {
+        std.log.debug("val {d}", .{card_number.*});
         total_cards += card_number.*;
     }
 
