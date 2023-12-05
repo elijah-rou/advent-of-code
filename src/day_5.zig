@@ -58,7 +58,6 @@ pub fn main() !void {
             else => {
                 const seed_start = try std.fmt.parseUnsigned(usize, s, 10);
                 const seed_range = try std.fmt.parseUnsigned(usize, seeds.next().?, 10);
-                std.log.debug("{} {} ", .{ seed_start, seed_range });
                 for (seed_start..seed_start + seed_range) |current_seed| {
                     const location = seed_map(maps, @as(i128, current_seed));
                     if (location < min_loc) {
