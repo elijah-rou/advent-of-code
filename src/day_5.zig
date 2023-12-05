@@ -4,6 +4,20 @@ const Allocator = std.mem.Allocator;
 const SeedArray = std.ArrayList(SeedFunction);
 
 const SeedFunction = struct { start: i128, range: i128, function: i128 };
+const PART = 2;
+
+fn seed_map(maps: [7]SeedArray, seed: i128) i128 {
+    var location = seed;
+    for (maps) |map| {
+        for (map.items) |seed_func| {
+            if (location >= seed_func.start and location < seed_func.start + seed_func.range) {
+                location += seed_func.function;
+                break;
+            }
+        }
+    }
+    return location;
+}
 
 pub fn main() !void {
     var main_arena = std.heap.ArenaAllocator.init(std.heap.c_allocator);
@@ -31,21 +45,27 @@ pub fn main() !void {
         }
     }
 
-    var min_loc: i128 = 1000000000000000000;
+    var min_loc: i128 = 1000000000000000000; // BEEG number
     while (seeds.next()) |s| {
-        var seed = try std.fmt.parseInt(i128, s, 10);
-        for (maps) |map| {
-            // std.log.debug("use {any}", .{map});
-            for (map.items) |seed_func| {
-                if (seed >= seed_func.start and seed < seed_func.start + seed_func.range) {
-                    seed += seed_func.function;
-                    break;
+        switch (PART) {
+            1 => {
+                const seed = try std.fmt.parseInt(i128, s, 10);
+                const location = seed_map(maps, seed);
+                if (location < min_loc) {
+                    min_loc = location;
                 }
-            }
-            // std.log.debug("mapped {d}", .{seed});
-        }
-        if (seed < min_loc) {
-            min_loc = seed;
+            },
+            else => {
+                const seed_start = try std.fmt.parseUnsigned(usize, s, 10);
+                const seed_range = try std.fmt.parseUnsigned(usize, seeds.next().?, 10);
+                std.log.debug("{} {} ", .{ seed_start, seed_range });
+                for (seed_start..seed_start + seed_range) |current_seed| {
+                    const location = seed_map(maps, @as(i128, current_seed));
+                    if (location < min_loc) {
+                        min_loc = location;
+                    }
+                }
+            },
         }
     }
 
