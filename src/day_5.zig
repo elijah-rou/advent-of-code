@@ -40,8 +40,7 @@ pub fn main() !void {
             try maps[idx - 1].append(SeedFunction{ .start = source, .end = source + range, .function = function });
         }
     }
-
-    var min_loc: i64 = 1000000000000000000; // BEEG number
+    var min_loc: i64 = @bitCast(std.math.inf(f64));
     switch (PART) {
         1 => {
             while (seed_list.next()) |s| {
