@@ -5,7 +5,7 @@ const ArrayList = std.ArrayList;
 const PART = 1;
 
 // Return a new string by concatenating strings in an ArrayList
-fn concat(allocator: std.mem.Allocator, strings: ArrayList([]const u8)) []u8 {
+fn concat(allocator: std.mem.Allocator, strings: ArrayList([]const u8)) ![]u8 {
     var total_len: usize = 0;
     for (strings.items) |str| {
         total_len += str.len;
@@ -37,8 +37,8 @@ pub fn main() !void {
         try times.append(time);
         try time_strs.append(t);
     }
-    const big_time = concat(ma, time_strs);
-    const big_race = try std.fmt.parseUnsigned(usize, big_time, 10);
+    const big_time_str = try concat(ma, time_strs);
+    const big_time = try std.fmt.parseUnsigned(usize, big_time_str, 10);
     time_strs.clearAndFree();
 
     var distances = ArrayList(usize).init(ma);
@@ -48,8 +48,8 @@ pub fn main() !void {
         try distances.append(distance);
         try distance_strs.append(d);
     }
-    const big_distance = concat(ma, distance_strs);
-    const big_record = try std.fmt.parseUnsigned(usize, big_distance, 10);
+    const big_record_str = try concat(ma, distance_strs);
+    const big_record = try std.fmt.parseUnsigned(usize, big_record_str, 10);
     distance_strs.clearAndFree();
 
     var record_mult: u32 = 1;
@@ -68,8 +68,8 @@ pub fn main() !void {
     }
 
     var big_record_wins: u128 = 0;
-    for (1..big_race) |velocity| {
-        const distance = velocity * (big_race - velocity);
+    for (1..big_time) |velocity| {
+        const distance = velocity * (big_time - velocity);
         if (distance > big_record) {
             big_record_wins += 1;
         }
