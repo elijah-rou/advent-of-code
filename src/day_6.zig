@@ -4,6 +4,23 @@ const ArrayList = std.ArrayList;
 
 const PART = 1;
 
+// Return a new string by concatenating strings in an ArrayList
+fn concat(allocator: std.mem.Allocator, strings: ArrayList([]const u8)) []u8 {
+    var total_len: usize = 0;
+    for (strings.items) |str| {
+        total_len += str.len;
+    }
+
+    var string = try allocator.alloc(u8, total_len);
+    var offset: usize = 0;
+    for (strings.items) |str| {
+        std.mem.copy(u8, string[offset..][0..str.len], str);
+        offset += str.len;
+    }
+
+    return string;
+}
+
 pub fn main() !void {
     var main_arena = std.heap.ArenaAllocator.init(std.heap.c_allocator);
     const ma = main_arena.allocator();
@@ -15,37 +32,23 @@ pub fn main() !void {
 
     var times = ArrayList(usize).init(ma);
     var time_strs = ArrayList([]const u8).init(ma);
-    var total_len: usize = 0;
     while (time_input.next()) |t| {
         const time = try std.fmt.parseUnsigned(usize, t, 10);
         try times.append(time);
         try time_strs.append(t);
-        total_len += t.len;
     }
-    var big_time = try ma.alloc(u8, total_len);
-    var offset: usize = 0;
-    for (time_strs.items) |slice| {
-        std.mem.copy(u8, big_time[offset..][0..slice.len], slice);
-        offset += slice.len;
-    }
+    const big_time = concat(ma, time_strs);
     const big_race = try std.fmt.parseUnsigned(usize, big_time, 10);
     time_strs.clearAndFree();
 
     var distances = ArrayList(usize).init(ma);
     var distance_strs = ArrayList([]const u8).init(ma);
-    total_len = 0;
     while (dist_input.next()) |d| {
         const distance = try std.fmt.parseUnsigned(usize, d, 10);
         try distances.append(distance);
         try distance_strs.append(d);
-        total_len += d.len;
     }
-    var big_distance = try ma.alloc(u8, total_len);
-    offset = 0;
-    for (distance_strs.items) |slice| {
-        std.mem.copy(u8, big_distance[offset..][0..slice.len], slice);
-        offset += slice.len;
-    }
+    const big_distance = concat(ma, distance_strs);
     const big_record = try std.fmt.parseUnsigned(usize, big_distance, 10);
     distance_strs.clearAndFree();
 
