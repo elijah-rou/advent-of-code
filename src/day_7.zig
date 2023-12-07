@@ -4,22 +4,23 @@ const CardSet = std.AutoHashMap(u8, u32);
 const ArrayList = std.ArrayList;
 const Allocator = std.mem.Allocator;
 
+const PART = 2;
 fn card_map(card: u8) u32 {
     return switch (card) {
-        65 => 14, // A
-        75 => 13, // K
-        81 => 12, // Q
-        74 => 11, // J
-        84 => 10, // T
-        57 => 9, // 9
-        56 => 8, // 8
-        55 => 7, // 7
-        54 => 6, // 6
-        53 => 5, // 5
-        52 => 4, // 4
-        51 => 3, // 3
-        50 => 2, // 2
-        else => 1, // default case
+        'A' => 14,
+        'K' => 13,
+        'Q' => 12,
+        'J' => if (PART == 1) 11 else 1,
+        'T' => 10,
+        '9' => 9,
+        '8' => 8,
+        '7' => 7,
+        '6' => 6,
+        '5' => 5,
+        '4' => 4,
+        '3' => 3,
+        '2' => 2,
+        else => 1,
     };
 }
 
@@ -34,11 +35,14 @@ fn score_draw(allocator: Allocator, cards: []u8) !u32 {
         }
     }
     var valueIt = card_set.valueIterator();
-    return switch (card_set.count()) {
+    const setCorrection: u32 = if (PART == 2 and card_set.contains('J')) 1 else 0;
+    const jokerCorrection: u32 = if (PART == 2 and card_set.contains('J')) card_set.get('J').? else 0;
+    return switch (card_set.count() - setCorrection) {
+        0 => 7, // All J
         1 => 7, // five of a kind
         2 => {
             while (valueIt.next()) |amt| {
-                if (amt.* == 4) { // four of a kind
+                if (amt.* + jokerCorrection == 4) { // four of a kind
                     return 6;
                 }
             } else {
@@ -47,7 +51,7 @@ fn score_draw(allocator: Allocator, cards: []u8) !u32 {
         },
         3 => {
             while (valueIt.next()) |amt| {
-                if (amt.* == 3) { // three of a kind
+                if (amt.* + jokerCorrection == 3) { // three of a kind
                     return 4;
                 }
             } else { // two pair
@@ -66,7 +70,6 @@ fn tiebreak(_: void, cards_1: [2][]u8, cards_2: [2][]u8) bool {
 
     const cards_1_rank = score_draw(allocator, cards_1[0]) catch return true;
     const cards_2_rank = score_draw(allocator, cards_2[0]) catch return true;
-    std.log.debug("{s}|{d} <-> {s}|{d}", .{ cards_1[0], cards_1_rank, cards_2[0], cards_2_rank });
     if (cards_1_rank == cards_2_rank) {
         for (cards_1[0], cards_2[0]) |card_1, card_2| {
             if (card_1 != card_2) {
@@ -102,8 +105,7 @@ pub fn main() !void {
     var winnings: usize = 0;
     for (camel_cards.items, 1..) |card_and_bid, rank| {
         winnings += try std.fmt.parseUnsigned(usize, card_and_bid[1], 10) * rank;
-        std.log.debug("{s}", .{card_and_bid[0]});
     }
 
-    std.log.debug("Winnigs: {d}", .{winnings});
+    std.log.debug("Winnings: {d}", .{winnings});
 }
