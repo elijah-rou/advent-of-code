@@ -5,6 +5,7 @@ const ArrayList = std.ArrayList;
 const Allocator = std.mem.Allocator;
 
 const PART = 2;
+
 fn card_map(card: u8) u32 {
     return switch (card) {
         'A' => 14,
@@ -26,7 +27,6 @@ fn card_map(card: u8) u32 {
 
 fn score_draw(allocator: Allocator, cards: []u8) !u32 {
     var card_set = CardSet.init(allocator);
-
     for (cards) |card| {
         if (card_set.get(card)) |amt| {
             try card_set.put(card, amt + 1);
@@ -35,8 +35,10 @@ fn score_draw(allocator: Allocator, cards: []u8) !u32 {
         }
     }
     var valueIt = card_set.valueIterator();
-    const setCorrection: u32 = if (PART == 2 and card_set.contains('J')) 1 else 0;
-    const jokerCorrection: u32 = if (PART == 2 and card_set.contains('J')) card_set.get('J').? else 0;
+
+    const hasJoker = PART == 2 and card_set.contains('J');
+    const setCorrection: u32 = if (hasJoker) 1 else 0;
+    const jokerCorrection: u32 = if (card_set.get('J')) |amt| amt else 0;
     return switch (card_set.count() - setCorrection) {
         0 => 7, // All J
         1 => 7, // five of a kind
@@ -73,7 +75,7 @@ fn tiebreak(_: void, cards_1: [2][]u8, cards_2: [2][]u8) bool {
     if (cards_1_rank == cards_2_rank) {
         for (cards_1[0], cards_2[0]) |card_1, card_2| {
             if (card_1 != card_2) {
-                if (card_map(card_1) < card_map(card_2)) return true else return false;
+                return card_map(card_1) < card_map(card_2);
             }
         }
         return true;
@@ -107,5 +109,5 @@ pub fn main() !void {
         winnings += try std.fmt.parseUnsigned(usize, card_and_bid[1], 10) * rank;
     }
 
-    std.log.debug("Winnings: {d}", .{winnings});
+    std.log.info("Winnings: {d}", .{winnings});
 }
