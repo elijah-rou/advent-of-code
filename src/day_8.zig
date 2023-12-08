@@ -87,7 +87,6 @@ pub fn main() !void {
                 is_all_z = is_all_z and point[2] == 'Z';
                 starting_points.items[idx] = new_point;
             }
-            //std.log.debug("Starting Points: {any}", .{starting_points.items});
             steps += 1;
             if (is_all_z) {
                 all_z = true;
