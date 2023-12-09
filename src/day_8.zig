@@ -4,8 +4,8 @@ const HashMap = std.StringHashMap([2][]const u8);
 const ArrayList = std.ArrayList;
 
 pub fn main() !void {
-    const allocator = std.heap.page_allocator;
-    const arena = std.heap.ArenaAllocator.init(allocator);
+    var arena = std.heap.ArenaAllocator.init(std.heap.c_allocator);
+    const allocator = arena.allocator();
     defer arena.deinit();
 
     var desert_map = HashMap.init(allocator);
