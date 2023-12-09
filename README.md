@@ -1,11 +1,11 @@
 # Advent of Code
 Central repository for all of my AoC code.
-I started using AoC to learn different languages, though from 2024 I might try for a leaderboard position!
+I started doing AoC to learn different languages, though from 2024 I might try for a leaderboard position with gross code in Python!
 
 ## 2023
 My first "official" year. 
 
-Scratching my low-level itch with allocators and pointers in [Zig](2023/)
+Scratching my low-level itch with allocators and pointers in [Zig](2023/).
 
 ## 2022
 Done retroactively. In progress.
