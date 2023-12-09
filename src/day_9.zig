@@ -17,7 +17,8 @@ fn seq_next(allocator: Allocator, seq: []i32, forward_pass: bool) !i32 {
     if (all_zero) {
         return 0;
     }
-    return (if (forward_pass) seq[seq.len - 1] else seq[0]) + try seq_next(allocator, diffs.items, forward_pass);
+    const pass_value = if (forward_pass) seq[seq.len - 1] else seq[0];
+    return pass_value + try seq_next(allocator, diffs.items, forward_pass);
 }
 
 pub fn main() !void {
