@@ -2,9 +2,9 @@ const std = @import("std");
 const util = @import("util.zig");
 const ArrayList = std.ArrayList;
 const Allocator = std.mem.Allocator;
-const HashSet = std.AutoHashMap;
 
 const Direction = enum { up, down, left, right };
+const HashSet = std.AutoHashMap([2]usize, void);
 const PipeResult = struct {
     x: usize,
     y: usize,
@@ -68,15 +68,35 @@ pub fn main() !void {
     var momentum: Direction = .down;
     var current_x = s_loc[0];
     var current_y = s_loc[1] + 1;
+    var pipe_locs = HashSet.init(allocator);
+    try pipe_locs.put(.{ current_x, current_y }, undefined);
+
     while (current_pipe != 'S') {
         const next_pipe = follow_pipe(current_pipe, momentum, current_x, current_y);
         current_x = next_pipe.x;
         current_y = next_pipe.y;
         momentum = next_pipe.momentum;
+
         current_pipe = grid[current_y][current_x];
+        try pipe_locs.put(.{ current_x, current_y }, undefined);
         steps += 1;
     }
     const longest_len = steps / 2;
-
     std.log.info("Longest Len: {d}", .{longest_len});
+
+    var space: u32 = 0;
+    for (0..140) |row| {
+        var in: bool = false;
+        for (0..140) |col| {
+            const pipe = grid[row][col];
+            if (pipe_locs.contains(.{ col, row })) {
+                if (pipe == '7' or pipe == 'F' or pipe == '|' or pipe == 'S') {
+                    in = !in;
+                }
+            } else if (in and !pipe_locs.contains(.{ col, row })) {
+                space += 1;
+            }
+        }
+    }
+    std.log.info("Contained Space: {d}", .{space});
 }
