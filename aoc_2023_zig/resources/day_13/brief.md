@@ -46,13 +46,13 @@ In this pattern, the line of reflection is the vertical line between columns 5 a
 
 The second pattern reflects across a horizontal line instead:
 
-1 #...##..# 1
-2 #....#..# 2
-3 ..##..### 3
-4v#####.##.v4
-5^#####.##.^5
-6 ..##..### 6
-7 #....#..# 7
+1 #...##..# 1  7 #....#..#
+2 #....#..# 2  6 ..##..###
+3 ..##..### 3  5 #####.##.
+4v#####.##.v4  4 #####.##.
+5^#####.##.^5  3 ..##..###
+6 ..##..### 6  2 #....#..#
+7 #....#..# 7  1 #...##..#
 This pattern reflects across the horizontal line between rows 4 and 5. Row 1 would reflect with a hypothetical row 8, but since that's not in the pattern, row 1 doesn't need to match anything. The remaining rows match: row 2 matches row 7, row 3 matches row 6, and row 4 matches row 5.
 
 To summarize your pattern notes, add up the number of columns to the left of each vertical line of reflection; to that, also add 100 multiplied by the number of rows above each horizontal line of reflection. In the above example, the first pattern's vertical line has 5 columns to its left and the second pattern's horizontal line has 4 rows above it, a total of 405.
