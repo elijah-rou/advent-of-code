@@ -1,19 +1,23 @@
 # Advent of Code
+
 Central repository for all of my AoC code.
-I started doing AoC to learn different languages, though from 2024 I might try for a leaderboard position with some gross looking code in a more competition-friendly lang like Python, Clojure or Julia!
+I started doing AoC to learn different languages, though in 2025 I might try for a leaderboard position with some gross looking code in a more competition-friendly lang.
 
-## [2023 - Zig](./2023%20-%20Zig/)
-My first "official" year doing AoC.
+## [2024 - OCaml](./2024_ocaml/)
 
-Scratching my low-level itch with allocators, pointers and general memory funkiness in [Zig](ziglang.org). It's simple, fun and blazingly-fast™ :)
+Current Progress: Day 1
 
-## [2022 - Elixir](./2022%20-%20Elixir/)
-Done retroactively. In progress.
+ML language time.
 
-The Erlang virtual machine, BEAM, is a great tool to have in your arsenal for building distributed and concurrent systems (and even reactive web apps with [Phoenix](phoenixframework.org)), so naturally [Elixir](elixir-lang.org) is the choice.
+## [2023 - Zig](./2023_zig/)
 
-## 2021 - TBD
-Language Candidate: OCaml
+My first "official" AoC! Current Progress: Day 16
 
-## 2020 - TBD
-Language Candidate: Odin
+Scratching my low-level itch with allocators, pointers and general memory funkiness in [Zig](ziglang.org), Blazingly-Fast™ :)
+
+## [2022 - Elixir](./2022_elixir/)
+
+Current Progress: Day 12
+
+The BEAM is a great for distributed systems but Erlang is yuck so let's do some [Elixir](elixir-lang.org)!
+
