@@ -1,6 +1,6 @@
 const std = @import("std");
 
-pub fn read_delim(allocator: *const std.mem.Allocator, filename: []const u8, delimiter: []const u8) !std.mem.SplitIterator(u8, .sequence) {
+pub fn read_delim(allocator: std.mem.Allocator, filename: []const u8, delimiter: []const u8) !std.mem.SplitIterator(u8, .sequence) {
     // Read File
     var path_buffer: [std.fs.max_path_bytes]u8 = undefined;
     const path = try std.fs.realpath(filename, &path_buffer);
@@ -9,7 +9,7 @@ pub fn read_delim(allocator: *const std.mem.Allocator, filename: []const u8, del
 
     const file_stats = try file.stat();
     const file_size = file_stats.size;
-    const buffer = try file.readToEndAlloc(allocator.*, file_size);
+    const buffer = try file.readToEndAlloc(allocator, file_size);
     errdefer allocator.free(buffer);
 
     // Return iterator
