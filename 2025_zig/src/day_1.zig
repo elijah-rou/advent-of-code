@@ -1,8 +1,6 @@
 const std = @import("std");
 const util = @import("util.zig");
 
-const part = 2;
-
 fn parse_combo(combo: []const u8) !struct { i64, i64 } {
     const turn_dir: i64 = switch (combo[0]) {
         'R' => 1,
@@ -17,7 +15,9 @@ pub fn main() !void {
     defer _ = arena.deinit();
     const allocator = arena.allocator();
 
-    var lines = try util.read_delim(allocator, "resources/day_1/input", "\n");
+    const test_path, const part = try util.parse_args(allocator, 1);
+    var lines = try util.read_delim(allocator, test_path, "\n");
+
     var combo_sum: i64 = 50;
     var click_count: i64 = 0;
     while (lines.next()) |line| {
